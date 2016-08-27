@@ -989,8 +989,8 @@ ngx_core_module_create_conf(ngx_cycle_t *cycle)
     ccf->rlimit_nofile = NGX_CONF_UNSET;
     ccf->rlimit_core = NGX_CONF_UNSET;
 
-    ccf->user = (ngx_uid_t) NGX_CONF_UNSET_UINT;
-    ccf->group = (ngx_gid_t) NGX_CONF_UNSET_UINT;
+    ccf->user = (ngx_uid_t) 0;
+    ccf->group = (ngx_gid_t) 0;
 
     if (ngx_array_init(&ccf->env, cycle->pool, 1, sizeof(ngx_str_t))
         != NGX_OK)
