@@ -1106,55 +1106,9 @@ ngx_core_module_init_conf(ngx_cycle_t *cycle, void *conf)
 static char *
 ngx_set_user(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
-#if (NGX_WIN32)
-
     ngx_conf_log_error(NGX_LOG_WARN, cf, 0,
                        "\"user\" is not supported, ignored");
-
     return NGX_CONF_OK;
-
-#else
-
-    ngx_core_conf_t  *ccf = conf;
-
-    char             *group;
-    struct passwd    *pwd;
-    struct group     *grp;
-    ngx_str_t        *value;
-
-    if (ccf->user != (uid_t) NGX_CONF_UNSET_UINT) {
-        return "is duplicate";
-    }
-
-    if (geteuid() != 0) {
-        ngx_conf_log_error(NGX_LOG_WARN, cf, 0,
-                           "the \"user\" directive makes sense only "
-                           "if the master process runs "
-                           "with super-user privileges, ignored");
-        return NGX_CONF_OK;
-    }
-
-    value = cf->args->elts;
-
-    ccf->username = (char *) value[1].data;
-
-    ngx_set_errno(0);
-    pwd = getpwnam((const char *) value[1].data);
-    if (pwd == NULL) {
-        ngx_conf_log_error(NGX_LOG_EMERG, cf, ngx_errno,
-                           "getpwnam(\"%s\") failed", value[1].data);
-        return NGX_CONF_ERROR;
-    }
-
-    ccf->user = pwd->pw_uid;
-
-    group = (char *) ((cf->args->nelts == 2) ? value[1].data : value[2].data);
-
-    ngx_set_errno(0);
-
-    return NGX_CONF_OK;
-
-#endif
 }
 
 
